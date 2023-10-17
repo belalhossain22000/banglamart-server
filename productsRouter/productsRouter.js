@@ -51,5 +51,30 @@ module.exports = (productsCollection) => {
     }
   });
 
+
+  // Route to update a product by its ID
+router.put("/updateProduct/:productId", async (req, res) => {
+  const productId = req.params.productId;
+  const updatedProduct = req.body; // Updated product data
+
+  try {
+    const filter = { _id: new ObjectId(productId) };
+    const update = {
+      $set: updatedProduct, // Use $set to update specific fields
+    };
+
+    const result = await productsCollection.updateOne(filter, update);
+
+    if (result.matchedCount > 0) {
+      res.status(200).json({ message: `Product with ID ${productId} updated successfully` });
+    } else {
+      res.status(404).json({ message: `Product with ID ${productId} not found` });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
   return router;
 };
