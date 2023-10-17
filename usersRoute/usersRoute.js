@@ -1,4 +1,5 @@
 const express = require("express");
+const { ObjectId } = require("mongodb");
 const router = express.Router();
 
 module.exports = (usersCollection) => {
@@ -51,6 +52,51 @@ module.exports = (usersCollection) => {
     const result = await usersCollection.insertOne(user);
     res.send(result);
   });
+
+
+  // Route to update a user by their ID
+router.put("/users/:userId", async (req, res) => {
+  const userId = req.params.userId;
+  const updatedUser = req.body; // Updated user data
+
+  try {
+    const filter = { _id: new ObjectId(userId) };
+    const update = {
+      $set: updatedUser, 
+    };
+
+    const result = await usersCollection.updateOne(filter, update);
+
+    if (result.matchedCount > 0) {
+      res.status(200).json({result, message: `User with ID ${userId} updated successfully` });
+    } else {
+      res.status(404).json({ message: `User with ID ${userId} not found` });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+
+router.delete("/users/:userId", async (req, res) => {
+  const userId = req.params.userId;
+
+  try {
+    const filter = { _id: new ObjectId(userId) };
+
+    const result = await usersCollection.deleteOne(filter);
+
+    if (result.deletedCount > 0) {
+      res.status(200).json({result, message: `User with ID ${userId} deleted successfully` });
+    } else {
+      res.status(404).json({ message: `User with ID ${userId} not found` });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 
   return router;
 };
