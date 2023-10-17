@@ -1,9 +1,12 @@
 const express = require("express");
 const cors = require("cors");
+const userRoutes = require("./usersRoute/usersRoute.js");
+
+const productsRouter = require('./productsRouter/productsRouter.js');
+
 require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 3000;
-const userRoutes = require("./usersRoute/usersRoute.js");
 
 // Enable  middleware
 app.use(cors());
@@ -30,9 +33,15 @@ async function run() {
     await client.connect();
 
     const usersCollection = client.db("E-commerce").collection("users");
-
+    const productsCollection = client.db("E-commerce").collection("products");
+   
+   
     // users route
     app.use("/", userRoutes(usersCollection));
+
+
+    app.use('/', productsRouter(productsCollection));
+
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
