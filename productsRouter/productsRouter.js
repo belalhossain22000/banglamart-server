@@ -8,7 +8,7 @@ module.exports = (productsCollection) => {
   router.post("/createProducts", async (req, res) => {
     const product = req.body;
     try {
-      const result = await productsCollection.insertMany(product);
+      const result = await productsCollection.insertOne(product);
       res.status(201).json(result);
     } catch (error) {
       console.error(error);
