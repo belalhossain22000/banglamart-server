@@ -3,11 +3,12 @@ const { ObjectId } = require("mongodb");
 const router = express.Router();
 
 module.exports = (productsCollection) => {
+
   // Route to create a new product
   router.post("/createProducts", async (req, res) => {
     const product = req.body;
     try {
-      const result = await productsCollection.insertOne(product);
+      const result = await productsCollection.insertMany(product);
       res.status(201).json(result);
     } catch (error) {
       console.error(error);
