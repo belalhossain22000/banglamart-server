@@ -4,6 +4,7 @@ const userRoutes = require("./usersRoute/usersRoute.js");
 
 const productsRouter = require('./productsRouter/productsRouter.js');
 
+const cartRouter = require('./cartRouter/cartRouter.js')
 require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 3000;
@@ -34,6 +35,7 @@ async function run() {
 
     const usersCollection = client.db("E-commerce").collection("users");
     const productsCollection = client.db("E-commerce").collection("products");
+    const cartCollection = client.db("E-commerce").collection("carts");
    
    
     // users route
@@ -42,7 +44,7 @@ async function run() {
 
     app.use('/', productsRouter(productsCollection));
 
-
+    app.use('/', cartRouter(cartCollection));
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(

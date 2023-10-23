@@ -39,7 +39,7 @@ module.exports = (usersCollection) => {
 
 
   // create user
-  router.post("/users", async (req, res) => {
+  router.post("/createUser", async (req, res) => {
     const user = req.body;
     const query = { email: user.email };
     // console.log(user);
