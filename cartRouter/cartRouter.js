@@ -6,7 +6,7 @@ module.exports = (cartCollection) => {
   // Route to add an item to the cart or increase quantity if it already exists
   router.post("/addCart", async (req, res) => {
     const cartItem = req.body;
-    const productId = cartItem.productId; // Assuming you have a productId field in the cartItem
+    const productId = cartItem?.productId; 
 
     try {
       // Check if a cart item with the same product ID exists
