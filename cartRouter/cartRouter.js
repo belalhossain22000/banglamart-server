@@ -6,7 +6,7 @@ module.exports = (cartCollection) => {
   // Route to add an item to the cart or increase quantity if it already exists
   router.post("/addCart", async (req, res) => {
     const cartItem = req.body;
-    const productId = cartItem?.productId; 
+    const productId = cartItem?.productId;
 
     try {
       // Check if a cart item with the same product ID exists
@@ -83,13 +83,13 @@ module.exports = (cartCollection) => {
   // Route to remove an item from the cart by its ID
   router.delete("/remove/:itemId", async (req, res) => {
     const itemId = req.params.itemId;
-
+    console.log(itemId);
     try {
-      const filter = { _id: new ObjectId(itemId) };
-
-      const result = await cartCollection.deleteOne(filter);
-
-      if (result.deletedCount > 0) {
+      const result = await cartCollection.deleteOne({
+        _id:itemId ,
+      });
+      console.log(result);
+      if (result?.deletedCount > 0) {
         res.status(200).json({
           result,
           message: `Item with ID ${itemId} removed from the cart`,
