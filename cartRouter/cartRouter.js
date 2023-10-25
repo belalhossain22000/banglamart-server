@@ -55,5 +55,71 @@ module.exports = (usersCollection) => {
     }
   });
 
+  router.get("/getUserCart/:userEmail", async (req, res) => {
+    const userEmail = req.params.userEmail;
+
+    try {
+      // Find the user with the specified email
+      const user = await usersCollection.findOne({ email: userEmail });
+
+      if (user) {
+        // Return the user's cart from the user object
+        const userCart = user.cart || [];
+
+        res.status(200).json(userCart);
+      } else {
+        res.status(404).json({ message: "User not found" });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Route to increase or decrease quantity of a product in the user's cart
+  router.put("/updateCartQuantity/:userEmail", async (req, res) => {
+    const userEmail = req.params.userEmail;
+    const { productId, change } = req.body;
+    console.log(req.body);
+    try {
+      // Find the user with the specified email
+      const user = await usersCollection.findOne({ email: userEmail });
+
+      if (user) {
+        // Find the product in the user's cart by its productId
+        const cart = user.cart || [];
+        const productIndex = cart.findIndex(
+          (product) => product.productId === productId
+        );
+
+        if (productIndex !== -1) {
+          // Product found, update its quantity
+          if (change === "increase") {
+            cart[productIndex].quantity++;
+          } else if (change === "decrease" && cart[productIndex].quantity > 1) {
+            cart[productIndex].quantity--;
+          }
+
+          // Update the user's cart with the modified cart
+          await usersCollection.updateOne(
+            { email: userEmail },
+            { $set: { cart } }
+          );
+
+          res
+            .status(200)
+            .json({ message: "Cart quantity updated successfully", cart });
+        } else {
+          res.status(404).json({ message: "Product not found in the cart" });
+        }
+      } else {
+        res.status(404).json({ message: "User not found" });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
   return router;
 };
