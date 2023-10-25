@@ -44,7 +44,7 @@ async function run() {
 
     app.use('/', productsRouter(productsCollection));
 
-    app.use('/', cartRouter(cartCollection));
+    app.use('/', cartRouter(usersCollection));
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
